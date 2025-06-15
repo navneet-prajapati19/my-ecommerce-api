@@ -1,0 +1,56 @@
+# Server port
+server:
+  port: 8080
+
+# Spring Boot configuration
+spring:
+  application:
+    name: my-ecommerce-api
+  # --- Database Config (H2 In-Memory for local development) ---
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update # Automatically creates/updates the database schema
+      open-in-view: false
+  h2:
+    console:
+      enabled: true # Enables the H2 database console at /h2-console
+
+  # --- Keycloak Integration (Resource Server) ---
+  # This section configures your Spring Boot app to validate JWTs from Keycloak
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # This must match the issuer in the JWT tokens from your Keycloak realm.
+          # For local dev, we point to the mapped port (8181). Docker will override this.
+          issuer-uri: http://localhost:8181/realms/my-realm
+
+# --- Keycloak Admin Client Configuration ---
+# These properties are used by our custom KeycloakAdminClientConfig bean to create a
+# client that can manage users (e.g., for our internal signup service).
+keycloak:
+  admin:
+    server-url: http://localhost:8181
+    realm: master # The admin client authenticates against the 'master' realm
+    client-id: admin-cli
+    username: admin # Use the admin credentials you set in docker-compose.yml
+    password: admin
+
+# --- Custom Application-Specific Properties ---
+# Details about our application's own client in Keycloak. We use these when
+# communicating with Keycloak's token endpoint for the login process.
+app:
+  keycloak:
+    auth-server-url: http://localhost:8181
+    realm: my-ecommerce-api
+    client-id: my-ecommerce-api
+    # IMPORTANT: You must get this value from the "Credentials" tab of your
+    # client in the Keycloak Admin Console. Keep it secret!
+    client-secret: BFiLVN309FnXDTTmJRaRBgHMeL5hmtsk
