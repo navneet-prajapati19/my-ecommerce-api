@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-initdb
+data:
+  init-user-db.sh: |
+    #!/bin/bash
+    set -e
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
+      CREATE USER keycloak_user WITH PASSWORD 'keycloak_pass';
+      CREATE DATABASE keycloak OWNER keycloak_user;
+
+      CREATE USER myapp_user WITH PASSWORD 'myapp_pass';
+      CREATE DATABASE myapp OWNER myapp_user;
+    EOSQL

@@ -1,7 +1,7 @@
 # --- Stage 1: Build the application ---
 # Use an official Gradle image that includes JDK 17.
 # The 'AS builder' names this stage so we can reference it later.
-FROM gradle:8.4-jdk17-alpine AS builder
+FROM --platform=linux/amd64 gradle:8.4-jdk17-alpine AS builder
 
 # Set the working directory inside the container
 WORKDIR /workspace

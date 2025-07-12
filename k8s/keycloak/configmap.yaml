@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-realm-config
+data:
+  KEYCLOAK_AUTH_SERVER_URL: http://keycloak-service:8080
+  KEYCLOAK_REALM: my-ecommerce-api-realm
+  KEYCLOAK_CLIENT_ID: my-ecommerce-api-clientId
+  realm-export.json: |
+    {
+      "realm": "my-ecommerce-api-realm",
+      "enabled": true,
+      "clients": [
+        {
+          "clientId": "my-ecommerce-api-clientId",
+          "name": "My Ecommerce Application",
+          "secret": "BFiLVN309FnXDTTmJRaRBgHMeL5hmtsk",
+          "enabled": true,
+          "clientAuthenticatorType": "client-secret",
+          "serviceAccountsEnabled": true,
+          "directAccessGrantsEnabled": false,
+          "standardFlowEnabled": false,
+          "protocol": "openid-connect",
+          "publicClient": false,
+          "redirectUris": [],
+          "webOrigins": [],
+          "fullScopeAllowed": true
+        }
+      ],
+      "users": [
+        {
+          "username": "service-account-my-ecommerce-api-clientId",
+          "enabled": true,
+          "serviceAccountClientId": "my-ecommerce-api-clientId",
+          "realmRoles": [],
+          "clientRoles": {
+            "realm-management": [
+              "manage-users",
+              "view-users",
+              "query-users"
+            ]
+          }
+        }
+      ]
+    }

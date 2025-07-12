@@ -1,0 +1,36 @@
+{
+  "realm": "my-ecommerce-api-realm",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "my-ecommerce-api-clientId",
+      "name": "My Ecommerce Application",
+      "secret": "BFiLVN309FnXDTTmJRaRBgHMeL5hmtsk",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "serviceAccountsEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "standardFlowEnabled": false,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "redirectUris": [],
+      "webOrigins": [],
+      "fullScopeAllowed": false
+    }
+  ],
+  "users": [],
+  "groups": [],
+  "roles": {},
+  "scopeMappings": [],
+  "clientsRoles": {},
+  "clientScopeMappings": [],
+  "serviceAccountClientRoles": {
+    "my-ecommerce-api-clientId": {
+      "realm-management": [
+        "manage-users",
+        "view-users",
+        "query-users"
+      ]
+    }
+  }
+}

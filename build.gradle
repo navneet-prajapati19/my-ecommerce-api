@@ -36,7 +36,7 @@ dependencies {
 	implementation 'org.jboss.resteasy:resteasy-jackson2-provider:6.2.5.Final'
 
 	// Database Driver (H2 for example)
-	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'org.postgresql:postgresql'
 
 	// Lombok for less boilerplate
 	compileOnly 'org.projectlombok:lombok'

@@ -16,16 +16,16 @@ import java.util.Collections;
 @Service
 public class AuthService {
 
-    @Value("${app.keycloak.auth-server-url}")
+    @Value("${keycloak.auth-server-url}")
     private String serverUrl;
 
-    @Value("${app.keycloak.realm}")
+    @Value("${keycloak.realm}")
     private String realm;
 
-    @Value("${app.keycloak.client-id}")
+    @Value("${keycloak.client-id}")
     private String clientId;
 
-    @Value("${app.keycloak.client-secret}")
+    @Value("${keycloak.client-secret}")
     private String clientSecret;
 
     public Response createUser(String username, String password, String email) {
