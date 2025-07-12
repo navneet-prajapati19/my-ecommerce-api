@@ -2,15 +2,10 @@ package com.example.ecommerce.controller;
 
 import com.example.ecommerce.dto.CustomResponse;
 import com.example.ecommerce.service.AuthService;
-import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.ws.rs.core.Response;
-
-import java.net.http.HttpResponse;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -22,9 +17,8 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<CustomResponse<?>> signup(@RequestParam String username, @RequestParam String password, @RequestParam String email) {
         try {
-            Response result = authService.createUser(username, password, email);
-            CustomResponse<Object> response = new CustomResponse<>(200, "User created successfully", result);
-            return ResponseEntity.ok(response);
+            CustomResponse<?> customResponse = authService.createUser(username, password, email);
+            return ResponseEntity.ok(customResponse);
         } catch (Exception e) {
             CustomResponse<Object> errorResponse = new CustomResponse<>(500, e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
@@ -34,9 +28,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<CustomResponse<?>> login(@RequestParam String username, @RequestParam String password, @RequestParam String email) {
         try {
-            AccessTokenResponse result = authService.loginUser(username, password);
-            CustomResponse<Object> response = new CustomResponse<>(200, "User created successfully", result);
-            return ResponseEntity.ok(response);
+            CustomResponse<?> customResponse = authService.loginUser(username, password);
+            return ResponseEntity.ok(customResponse);
         } catch (Exception e) {
             CustomResponse<Object> errorResponse = new CustomResponse<>(500, e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);

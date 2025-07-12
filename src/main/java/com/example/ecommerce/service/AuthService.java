@@ -1,42 +1,30 @@
 package com.example.ecommerce.service;
 
-import org.keycloak.OAuth2Constants;
+import com.example.ecommerce.dto.CustomResponse;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jakarta.ws.rs.core.Response;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AuthService {
 
-    @Value("${keycloak.auth-server-url}")
-    private String serverUrl;
+    @Autowired
+    private Keycloak keycloak;
 
     @Value("${keycloak.realm}")
     private String realm;
 
-    @Value("${keycloak.client-id}")
-    private String clientId;
-
-    @Value("${keycloak.client-secret}")
-    private String clientSecret;
-
-    public Response createUser(String username, String password, String email) {
-        Keycloak keycloak = KeycloakBuilder.builder()
-                .serverUrl(serverUrl)
-                .realm(realm)
-                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
-                .clientSecret(clientSecret)
-                .clientId(clientId)
-                .build();
-
+    public CustomResponse<?> createUser(String username, String password, String email) {
         UserRepresentation user = new UserRepresentation();
         user.setUsername(username);
         user.setEmail(email);
@@ -49,32 +37,26 @@ public class AuthService {
         passwordCred.setTemporary(false);
         user.setCredentials(Collections.singletonList(passwordCred));
 
-        Response response = keycloak.realm(realm).users().create(user);
-        if (response.getStatus() == 201) {
-            // User successfully created
-            return Response.ok().build();
-        } else {
-            // Handle error
-            return Response.status(response.getStatus()).build();
+        try (Response response = keycloak.realm(realm).users().create(user)) {
+            if (response.getStatus() == 201) {
+                return new CustomResponse<>(201, "user created successfully", null);
+            } else {
+                return new CustomResponse<>(response.getStatus(), "request failed", null);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public Response loginUser(String username, String password) {
+    public CustomResponse<?> loginUser(String username, String password) {
         try {
-            Keycloak keycloak = KeycloakBuilder.builder()
-                    .serverUrl(serverUrl)
-                    .realm(realm)
-                    .clientId(clientId)
-                    .clientSecret(clientSecret)
-                    .username(username)
-                    .password(password)
-                    .grantType(OAuth2Constants.PASSWORD)
-                    .build();
             AccessTokenResponse token = keycloak.tokenManager().getAccessToken();
-            return Response.ok(token).build();
+            Map<String, String> map = new HashMap<>();
+            map.put("access_token", token.getToken());
+            map.put("refresh_token", token.getRefreshToken());
+            return new CustomResponse<>(201, "user created successfully", map);
         } catch (Exception e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.UNAUTHORIZED.getStatusCode(), "Invalid username or password").build();
+            throw new RuntimeException(e);
         }
     }
 }
