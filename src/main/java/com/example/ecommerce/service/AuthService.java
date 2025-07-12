@@ -64,11 +64,11 @@ public class AuthService {
             Keycloak keycloak = KeycloakBuilder.builder()
                     .serverUrl(serverUrl)
                     .realm(realm)
-                    .grantType(OAuth2Constants.PASSWORD)
                     .clientId(clientId)
                     .clientSecret(clientSecret)
                     .username(username)
                     .password(password)
+                    .grantType(OAuth2Constants.PASSWORD)
                     .build();
             AccessTokenResponse token = keycloak.tokenManager().getAccessToken();
             return Response.ok(token).build();

@@ -40,4 +40,4 @@ keycloak:
 #    username: admin # Use the admin credentials you set in docker-compose.yml
 #    password: admin
 server:
-  port: 8080
+  port: 8082
