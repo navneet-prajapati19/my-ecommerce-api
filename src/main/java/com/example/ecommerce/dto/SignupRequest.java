@@ -1,3 +1,8 @@
 package com.example.ecommerce.dto;
-import lombok.Data;
-@Data public class SignupRequest { private String username; private String email; private String password; }
+
+import jakarta.validation.constraints.NotBlank;
+
+public record SignupRequest (@NotBlank String email,
+                             @NotBlank String password,
+                             @NotBlank String firstName,
+                             @NotBlank String lastName) {}

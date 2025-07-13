@@ -1,6 +1,13 @@
 package com.example.ecommerce.service;
 
 import com.example.ecommerce.dto.CustomResponse;
+import com.example.ecommerce.dto.ErrorResponse;
+import com.example.ecommerce.dto.LoginRequest;
+import com.example.ecommerce.dto.SignupRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotAuthorizedException;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -9,6 +16,7 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import jakarta.ws.rs.core.Response;
@@ -16,6 +24,7 @@ import jakarta.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
 
 @Service
 public class AuthService {
@@ -38,14 +47,18 @@ public class AuthService {
     @Value("${keycloak.client-secret}")
     private String clientSecret;
 
-    public CustomResponse<?> createUser(String password, String email, String firstName, String lastName) {
-        UserRepresentation userRepresentation = getUserRepresentation(password, email, firstName, lastName);
+    public CustomResponse<?> createUser(SignupRequest request) {
+        UserRepresentation userRepresentation = getUserRepresentation(request.email(), request.password(), request.firstName(), request.lastName());
 
         try (Response response = keycloak.realm(realm).users().create(userRepresentation)) {
             if (response.getStatus() == 201) {
-                return new CustomResponse<>(201, "userRepresentation created successfully", null);
+                return new CustomResponse<>(201, "user created successfully", null);
             } else {
-                return new CustomResponse<>(response.getStatus(), "request failed", null);
+                String message = response.readEntity(String.class);
+                ObjectMapper mapper = new ObjectMapper();
+                ErrorResponse err = mapper.readValue(message, ErrorResponse.class);
+                String errorMessage = err.errorMessage();
+                return new CustomResponse<>(response.getStatus(), errorMessage, null);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,17 +83,21 @@ public class AuthService {
         return userRepresentation;
     }
 
-    public CustomResponse<?> loginUser(String email, String password) {
+    public CustomResponse<?> loginUser(LoginRequest request) {
         try {
             AccessTokenResponse token = keycloakClientBuilder
                     .grantType(OAuth2Constants.PASSWORD)
-                    .username(email)
-                    .password(password)
+                    .username(request.email())
+                    .password(request.password())
                     .build().tokenManager().getAccessToken();
             Map<String, String> map = new HashMap<>();
             map.put("access_token", token.getToken());
             map.put("refresh_token", token.getRefreshToken());
             return new CustomResponse<>(201, "user created successfully", map);
+        } catch (BadRequestException e) {
+            return new CustomResponse<>(HttpStatus.BAD_REQUEST.value(), "user created successfully", null);
+        } catch (NotAuthorizedException e) {
+            return new CustomResponse<>(HttpStatus.UNAUTHORIZED.value(), "user created successfully", null);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
