@@ -25,5 +25,4 @@ kubectl apply -f redis/service.yaml
 #kubectl apply -f spring-boot/deployment.yaml
 #kubectl apply -f spring-boot/service.yaml
 
-kubectl apply -f ingress/nginx-ingress-controller.yaml
 kubectl apply -f ingress/ingress.yaml

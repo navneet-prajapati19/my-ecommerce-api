@@ -3,12 +3,11 @@ kind: Ingress
 metadata:
   name: app-ingress
   annotations:
-    spec:
-      ingressClassName:nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  ingressClassName: nginx
   rules:
-    - host: localhost
-      http:
+    - http:
         paths:
           - path: /api
             pathType: Prefix
@@ -17,3 +16,17 @@ spec:
                 name: spring-boot-service
                 port:
                   number: 8080
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak-service
+                port:
+                  number: 8080
+          - path: /pgadmin
+            pathType: Prefix
+            backend:
+              service:
+                name: pgadmin-service
+                port:
+                  number: 80
