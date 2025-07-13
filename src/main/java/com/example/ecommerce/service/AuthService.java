@@ -4,6 +4,8 @@ import com.example.ecommerce.dto.CustomResponse;
 import com.example.ecommerce.dto.ErrorResponse;
 import com.example.ecommerce.dto.LoginRequest;
 import com.example.ecommerce.dto.SignupRequest;
+import com.example.ecommerce.entity.AppUser;
+import com.example.ecommerce.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotAuthorizedException;
@@ -29,28 +31,25 @@ import java.util.Map;
 public class AuthService {
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private Keycloak keycloak;
 
     @Autowired
     private KeycloakBuilder keycloakClientBuilder;
 
-    @Value("${keycloak.auth-server-url}")
-    private String serverUrl;
-
     @Value("${keycloak.realm}")
     private String realm;
 
-    @Value("${keycloak.client-id}")
-    private String clientId;
-
-    @Value("${keycloak.client-secret}")
-    private String clientSecret;
-
     public CustomResponse<?> createUser(SignupRequest request) {
         UserRepresentation userRepresentation = getUserRepresentation(request.email(), request.password(), request.firstName(), request.lastName());
-
+        String userId = null;
         try (Response response = keycloak.realm(realm).users().create(userRepresentation)) {
             if (response.getStatus() == 201) {
+                String location = response.getHeaderString("Location");
+                userId = location.substring(location.lastIndexOf("/") + 1);
+                userRepository.save(AppUser.builder().id(userId).build());
                 return new CustomResponse<>(201, "user created successfully", null);
             } else {
                 String message = response.readEntity(String.class);
@@ -60,6 +59,10 @@ public class AuthService {
                 return new CustomResponse<>(response.getStatus(), errorMessage, null);
             }
         } catch (Exception e) {
+            if (userId != null) {
+                // Roll back Keycloak user manually
+                keycloak.realm(realm).users().delete(userId);
+            }
             e.printStackTrace();
             throw new RuntimeException(e);
         }
