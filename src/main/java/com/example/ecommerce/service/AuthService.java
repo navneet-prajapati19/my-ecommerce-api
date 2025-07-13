@@ -5,7 +5,6 @@ import com.example.ecommerce.dto.ErrorResponse;
 import com.example.ecommerce.dto.LoginRequest;
 import com.example.ecommerce.dto.SignupRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotAuthorizedException;
 import org.keycloak.OAuth2Constants;
@@ -95,9 +94,9 @@ public class AuthService {
             map.put("refresh_token", token.getRefreshToken());
             return new CustomResponse<>(201, "user created successfully", map);
         } catch (BadRequestException e) {
-            return new CustomResponse<>(HttpStatus.BAD_REQUEST.value(), "user created successfully", null);
+            return new CustomResponse<>(HttpStatus.BAD_REQUEST.value(), "invalid parameters or can't process", null);
         } catch (NotAuthorizedException e) {
-            return new CustomResponse<>(HttpStatus.UNAUTHORIZED.value(), "user created successfully", null);
+            return new CustomResponse<>(HttpStatus.UNAUTHORIZED.value(), "email or password is incorrect", null);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
