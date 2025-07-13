@@ -32,8 +32,8 @@ dependencies {
 
 	// Keycloak Admin Client to manage users
 	implementation 'org.keycloak:keycloak-admin-client:22.0.5'
-	implementation 'org.jboss.resteasy:resteasy-client:6.2.5.Final'
-	implementation 'org.jboss.resteasy:resteasy-jackson2-provider:6.2.5.Final'
+//	implementation 'org.jboss.resteasy:resteasy-client:6.2.5.Final'
+//	implementation 'org.jboss.resteasy:resteasy-jackson2-provider:6.2.5.Final'
 
 	// Database Driver (H2 for example)
 	runtimeOnly 'org.postgresql:postgresql'

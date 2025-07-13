@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-keycloak-db
+spec:
+  template:
+    spec:
+      containers:
+        - name: init-db
+          image: postgres:15
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: POSTGRES_PASSWORD
+          command: ["sh", "-c"]
+          args:
+            - |
+              psql -h postgresql-service -U playgrounduser -d playground -c "CREATE USER keycloak_user WITH PASSWORD 'keycloak_pass';"
+              psql -h postgresql-service -U playgrounduser -d playground -c "CREATE DATABASE keycloakdb OWNER keycloak_user;"
+      restartPolicy: OnFailure

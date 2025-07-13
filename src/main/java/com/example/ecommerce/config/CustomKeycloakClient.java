@@ -32,4 +32,13 @@ public class CustomKeycloakClient {
                 .clientId(clientId)
                 .build();
     }
+
+    @Bean
+    public KeycloakBuilder keycloakClientBuilder() {
+        return KeycloakBuilder.builder()
+                .serverUrl(serverUrl)
+                .realm(realm)
+                .clientSecret(clientSecret)
+                .clientId(clientId);
+    }
 }

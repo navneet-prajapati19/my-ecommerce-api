@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cleanup
+spec:
+  hostPID: true
+  containers:
+    - name: cleanup
+      image: busybox
+      command: ["sh", "-c", "rm -rf /data/postgresql/* && echo '✅ Cleaned up /data/postgresql' && sleep 60"]
+      securityContext:
+        privileged: true
+      volumeMounts:
+        - name: postgres-vol
+          mountPath: /data/postgresql
+  volumes:
+    - name: postgres-vol
+      hostPath:
+        path: /data/postgresql
+        type: Directory
+  restartPolicy: Never

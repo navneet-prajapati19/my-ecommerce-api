@@ -18,7 +18,7 @@ data:
           "enabled": true,
           "clientAuthenticatorType": "client-secret",
           "serviceAccountsEnabled": true,
-          "directAccessGrantsEnabled": false,
+          "directAccessGrantsEnabled": true,
           "standardFlowEnabled": false,
           "protocol": "openid-connect",
           "publicClient": false,

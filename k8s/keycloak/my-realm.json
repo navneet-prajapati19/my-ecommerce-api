@@ -9,27 +9,28 @@
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "serviceAccountsEnabled": true,
-      "directAccessGrantsEnabled": false,
+      "directAccessGrantsEnabled": true,
       "standardFlowEnabled": false,
       "protocol": "openid-connect",
       "publicClient": false,
       "redirectUris": [],
       "webOrigins": [],
-      "fullScopeAllowed": false
+      "fullScopeAllowed": true
     }
   ],
-  "users": [],
-  "groups": [],
-  "roles": {},
-  "scopeMappings": [],
-  "clientScopeMappings": [],
-  "serviceAccountClientRoles": {
-    "my-ecommerce-api-clientId": {
-      "realm-management": [
-        "manage-users",
-        "view-users",
-        "query-users"
-      ]
+  "users": [
+    {
+      "username": "service-account-my-ecommerce-api-clientId",
+      "enabled": true,
+      "serviceAccountClientId": "my-ecommerce-api-clientId",
+      "realmRoles": [],
+      "clientRoles": {
+        "realm-management": [
+          "manage-users",
+          "view-users",
+          "query-users"
+        ]
+      }
     }
-  }
+  ]
 }

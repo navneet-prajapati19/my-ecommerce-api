@@ -15,9 +15,9 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<CustomResponse<?>> signup(@RequestParam String username, @RequestParam String password, @RequestParam String email) {
+    public ResponseEntity<CustomResponse<?>> signup(@RequestParam String email, @RequestParam String password, @RequestParam String firstName, @RequestParam String lastName) {
         try {
-            CustomResponse<?> customResponse = authService.createUser(username, password, email);
+            CustomResponse<?> customResponse = authService.createUser(email, password, firstName, lastName);
             return ResponseEntity.ok(customResponse);
         } catch (Exception e) {
             CustomResponse<Object> errorResponse = new CustomResponse<>(500, e.getMessage(), null);
@@ -26,9 +26,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CustomResponse<?>> login(@RequestParam String username, @RequestParam String password, @RequestParam String email) {
+    public ResponseEntity<CustomResponse<?>> login(@RequestParam String email, @RequestParam String password) {
         try {
-            CustomResponse<?> customResponse = authService.loginUser(username, password);
+            CustomResponse<?> customResponse = authService.loginUser(email, password);
             return ResponseEntity.ok(customResponse);
         } catch (Exception e) {
             CustomResponse<Object> errorResponse = new CustomResponse<>(500, e.getMessage(), null);
