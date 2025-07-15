@@ -33,4 +33,4 @@ kubectl rollout status deployment/$APP_NAME
 
 echo "📜 Tailing logs..."
 LATEST_POD=$(kubectl get pods -l app=$APP_NAME -o jsonpath="{.items[0].metadata.name}")
-kubectl logs -f $LATEST_POD
+#kubectl logs -f $LATEST_POD

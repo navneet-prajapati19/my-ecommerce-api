@@ -34,7 +34,7 @@ WORKDIR /app
 COPY --from=builder /workspace/build/libs/*.jar app.jar
 
 # Expose the port that the Spring Boot application listens on
-EXPOSE 8080
+EXPOSE 8082
 
 # The command to run the application when the container starts.
 # Using the 'exec' form (array of strings) is a best practice.

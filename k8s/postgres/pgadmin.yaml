@@ -37,6 +37,9 @@ spec:
       containers:
         - name: pgadmin
           image: dpage/pgadmin4
+          env:
+            - name: SCRIPT_NAME
+              value: /pgadmin
           ports:
             - containerPort: 80
           envFrom:
