@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: spring-boot-app
-          image: ion:latest
+          image: spring-boot-app:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

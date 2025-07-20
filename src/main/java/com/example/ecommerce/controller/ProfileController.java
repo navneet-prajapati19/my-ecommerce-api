@@ -9,7 +9,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @RestController
-@RequestMapping("/api")
 public class ProfileController {
 
     @PostMapping("/profile")

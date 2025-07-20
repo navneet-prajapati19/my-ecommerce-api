@@ -28,6 +28,7 @@ logging:
   level:
     org.springframework.orm.jpa: DEBUG
     org.springframework.transaction: DEBUG
+    org.springframework.security: DEBUG
 
 keycloak:
   auth-server-url: ${KEYCLOAK_AUTH_SERVER_URL}
@@ -42,3 +43,11 @@ keycloak:
 #    password: admin
 server:
   port: 8082
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    info:
+      enabled: true

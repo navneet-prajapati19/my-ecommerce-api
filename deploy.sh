@@ -2,14 +2,14 @@
 
 # Variables
 APP_NAME="spring-boot-app"
-IMAGE_NAME="ion"
+IMAGE_NAME="spring-boot-app"
 
 # Generate unique tag (timestamp-based)
 TAG="v$(date +%s)"
 FULL_IMAGE="$IMAGE_NAME:$TAG"
 
 echo "🚀 Building Docker image: $FULL_IMAGE"
-docker build -t $FULL_IMAGE .
+docker build --platform linux/amd64 -t $FULL_IMAGE .
 
 if [ $? -ne 0 ]; then
     echo "❌ Docker build failed. Exiting."
@@ -18,6 +18,8 @@ fi
 
 echo "📦 Pushing image to local Docker registry (Docker Desktop uses local images directly)"
 # No need to push or load image when using Docker Desktop’s built-in K8s
+
+#kind load docker-image $FULL_IMAGE --name my-cluster
 
 echo "🔁 Updating Kubernetes deployment..."
 kubectl set image deployment/$APP_NAME $APP_NAME=$FULL_IMAGE

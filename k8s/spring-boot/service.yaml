@@ -8,5 +8,5 @@ spec:
     app: spring-boot-app
   ports:
     - port: 8080
-      targetPort: 8082
+      targetPort: 8080
   type: ClusterIP

@@ -1,7 +1,7 @@
 # --- Stage 1: Build the application ---
 # Use an official Gradle image that includes JDK 17.
 # The 'AS builder' names this stage so we can reference it later.
-FROM --platform=linux/amd64 gradle:8.4-jdk17-alpine AS builder
+FROM gradle:8.4-jdk17-alpine AS builder
 
 # Set the working directory inside the container
 WORKDIR /workspace
@@ -34,7 +34,7 @@ WORKDIR /app
 COPY --from=builder /workspace/build/libs/*.jar app.jar
 
 # Expose the port that the Spring Boot application listens on
-EXPOSE 8082
+EXPOSE 8080
 
 # The command to run the application when the container starts.
 # Using the 'exec' form (array of strings) is a best practice.

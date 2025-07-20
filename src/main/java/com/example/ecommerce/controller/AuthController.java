@@ -4,6 +4,7 @@ import com.example.ecommerce.dto.CustomResponse;
 import com.example.ecommerce.dto.LoginRequest;
 import com.example.ecommerce.dto.SignupRequest;
 import com.example.ecommerce.service.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,9 +30,20 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CustomResponse<?>> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<CustomResponse<?>> login(@Valid @RequestBody LoginRequest request, HttpServletResponse httpServletResponse) {
         try {
-            CustomResponse<?> customResponse = authService.loginUser(request);
+            CustomResponse<?> customResponse = authService.loginUser(request, httpServletResponse);
+            return ResponseEntity.status(customResponse.getStatus()).body(customResponse);
+        } catch (Exception e) {
+            CustomResponse<Object> errorResponse = new CustomResponse<>(500, e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<CustomResponse<?>> refreshToken(@CookieValue(value = "refresh_token", required = false) String refreshToken, HttpServletResponse httpServletResponse) {
+        try {
+            CustomResponse<?> customResponse = authService.refreshToken(refreshToken, httpServletResponse);
             return ResponseEntity.status(customResponse.getStatus()).body(customResponse);
         } catch (Exception e) {
             CustomResponse<Object> errorResponse = new CustomResponse<>(500, e.getMessage(), null);
